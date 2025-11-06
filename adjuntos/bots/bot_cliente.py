@@ -22,9 +22,11 @@ SLEEP_BETWEEN_POLLS = 4    # para no ciclar fuerte
 SESSION_TTL_SECS = 180     # ⏳ duración de la ventana (ajustá a gusto)
 
 MISSION_DURATION = 12 * 60  # ~12 minutos
-mission_running = True
+mission_running = False
 mission_start_time = 0.0
 current_mission_name: Optional[str] = None
+mission_chat_id = None
+waiting_takeoff = False
 
 # Ajustes del flujo de soporte por WhatsApp
 WPP_MIN_DIGITS = 8
@@ -335,25 +337,23 @@ def handle_lista_misiones(chat_id: int):
 
 def consumir_evento_takeoff():
 
-    while True:
-        datos = handler.obtenerDatosTakeOff()
-        if not datos:
-            print("todavía no llego el mail")
-            time.sleep(5)
-            continue
-        else:
-            return datos
+    datos = handler.obtenerDatosTakeOff()
+    if not datos:
+        print("Todavía no llegó el mail de Take Off")
+        return None
+    return datos
 
 def consumir_evento_landed():
     datos = handler.obtenerDatosLanded()
     if not datos:
-        print("todavía no llego el mail de Landed")
-        return
-    else:
-        return datos   
+        print("Todavía no llegó el mail de Landed")
+        return None
+    return datos
 
 def handle_mision1(chat_id: int, user_name: str):
-    global mission_running, mission_start_time, current_mission_name
+    global mission_running, mission_start_time, current_mission_name, waiting_takeoff, mission_chat_id
+
+    mission_chat_id = chat_id
 
     if not is_session_active(chat_id):
         remove_keyboard(chat_id, "Tu ventana estaba cerrada por inactividad. Escribí 'hola' para abrir una nueva.")
@@ -389,7 +389,7 @@ def handle_mision1(chat_id: int, user_name: str):
         mission_running = True
         mission_start_time = time.time()
         current_mission_name = "mision1"
-        datos = consumir_evento_takeoff()
+        waiting_takeoff = True
 
 
         client_log_operation(
@@ -404,19 +404,6 @@ def handle_mision1(chat_id: int, user_name: str):
             (
                 "Misión 'Perímetro Planta' enviada correctamente.\n"
                 "Bloqueo operativo activo hasta su finalización (~12 min)."
-            ),
-        )
-
-        send_message(
-            chat_id,
-            (          
-               f"DOCK: {datos.get('dock')} \n"
-               f"COORDENADAS: {datos.get('coordinates')} \n"
-               f"ORGANIZACIÓN: {datos.get('organization')} \n"
-               f"BATERIA DE DRON: {datos.get('drone_battery')} \n"
-               f"MISION: (Perimetro Planta) \n"
-               f"TIMESTAMP: {datos.get('timestamp')} \n"
-               f"SITE: {datos.get('site')} \n"
             ),
         )
 
@@ -506,11 +493,16 @@ def clear_pending_updates():
 def main():
     global mission_running
     global offset
+    global mission_chat_id
+    global waiting_takeoff
+
     client_log_operation("Bot iniciado con ventanas de conversación y control de misión…")
 
     clear_pending_updates()
 
     while True:
+        print(f"mission chat id es {mission_chat_id}")
+
         updates = get_updates(offset)
         if updates:
             for update in updates:
@@ -520,45 +512,46 @@ def main():
                     continue
 
                 message = update["message"]
-                chat_id = message["chat"]["id"]
+                mission_chat_id = message["chat"]["id"]
                 text = (message.get("text") or "").strip()
                 user_name = message["from"].get("first_name", "Desconocido")
 
                 # Si el usuario está en flujo de soporte, lo atendemos primero
-                if chat_id in support_flow:
-                    if handle_support_flow(chat_id, text, user_name):
+                if mission_chat_id in support_flow:
+                    if handle_support_flow(mission_chat_id, text, user_name):
                         continue
 
-                if not is_session_active(chat_id) and chat_id in sessions:
-                    end_session(chat_id)
-                    remove_keyboard(chat_id, "La ventana expiró por inactividad. Escribí 'hola' para empezar de nuevo.")
+                if not is_session_active(mission_chat_id) and mission_chat_id in sessions:
+                    end_session(mission_chat_id)
+                    remove_keyboard(mission_chat_id, "La ventana expiró por inactividad. Escribí 'hola' para empezar de nuevo.")
 
                 lower = text.lower()
                 if lower in ("/start", "hola"):
-                    handle_start_or_hola(chat_id, user_name)
+                    handle_start_or_hola(mission_chat_id, user_name)
                 elif lower == "lista de misiones":
-                    handle_lista_misiones(chat_id)
+                    handle_lista_misiones(mission_chat_id)
                 elif lower == "mision1":
-                    handle_mision1(chat_id, user_name)
+                    handle_mision1(mission_chat_id, user_name)
                 elif lower == "estado":
-                    handle_estado(chat_id)
+                    handle_estado(mission_chat_id)
                 elif lower in ("cerrar", "/cerrar"):
-                    handle_cerrar(chat_id)
+                    handle_cerrar(mission_chat_id)
                 elif lower == "soporte":
-                    prompt_support_opt_in(chat_id)
+                    prompt_support_opt_in(mission_chat_id)
                 else:
-                    handle_fallback(chat_id)
+                    handle_fallback(mission_chat_id)
 
         
-        if mission_running:
-            print("viendo que onda el mail Landed")
+        if mission_running and not waiting_takeoff:
+            
             datos = consumir_evento_landed()
+            print(datos)
             if  not datos:
                 continue
             else:
                 mission_running = False
                 send_message(
-                chat_id,
+                mission_chat_id,
                 (
                     "DRON ATERRIZADO \n"
                     f"DOCK: {datos.get('dock')} \n"
@@ -569,8 +562,29 @@ def main():
                     f"TIMESTAMP: {datos.get('timestamp')} \n"
                     f"SITE: {datos.get('site')} \n"
                 ),
-            )
+                )
 
+        if waiting_takeoff:
+            
+            datos = consumir_evento_takeoff()
+            print(datos)
+            if  not datos:
+                continue
+            else:
+                waiting_takeoff = False
+                send_message(
+                mission_chat_id,
+                (
+                    "DRON TAKE OFF \n"
+                    f"DOCK: {datos.get('dock')} \n"
+                    f"COORDENADAS: {datos.get('coordinates')} \n"
+                    f"ORGANIZACIÓN: {datos.get('organization')} \n"
+                    f"BATERIA DE DRON: {datos.get('drone_battery')} \n"
+                    f"MISION: (Perimetro Planta) \n"
+                    f"TIMESTAMP: {datos.get('timestamp')} \n"
+                    f"SITE: {datos.get('site')} \n"
+                ),
+                )
                 
         time.sleep(SLEEP_BETWEEN_POLLS)
 

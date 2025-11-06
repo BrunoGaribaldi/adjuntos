@@ -7,7 +7,7 @@ import imaplib
 import email
 from email.header import decode_header, make_header
 from email.utils import parsedate_to_datetime
-from .mail_data_handler import handler
+#from .mail_data_handler import handler
 
 from datetime import datetime
 
@@ -48,40 +48,71 @@ class MonitorearCorreo:
             logging.error(f"Error conectando al mail: {e}")
             return False
 
-    def buscar_correos(self):
+
+    def buscar_correos(self, mailbox="INBOX"):
+        """
+        Lee correos UNSEEN desde Hostinger (imap.hostinger.com) y filtra por FlytBase.
+        - Usa IDs de secuencia (SEARCH/FETCH) y los decodifica a str (requisito de Hostinger).
+        - Usa BODY.PEEK[] para no marcar como leído al hacer FETCH.
+        """
         try:
-            status, messages = self.mail.search(None, 'UNSEEN')
-            logging.info(f"Estado búsqueda: {status}")
-            if status != 'OK':
+            # 1) Seleccionar carpeta
+            typ, _ = self.mail.select(mailbox)  # p.ej. "INBOX"
+            if typ != 'OK':
+                logging.error(f"No se pudo seleccionar {mailbox}")
                 return []
-            ids = messages[0].split()
+
+            # 2) Buscar mensajes no leídos (IDs de secuencia)
+            typ, data = self.mail.search(None, 'UNSEEN')
+            logging.info(f"Estado búsqueda: {typ}, data={data!r}")
+            if typ != 'OK' or not data or not data[0]:
+                logging.info("No hay mensajes UNSEEN.")
+                return []
+
+            # 3) Decodificar IDs a str (Hostinger es estricto con el messageset)
+            ids = [mid.decode('ascii', 'ignore') for mid in data[0].split() if mid]
+            logging.info(f"IDs a revisar: {ids}")
+
             correos_leer = []
 
-            for correo_id in ids:
-                status, msg_data = self.mail.fetch(correo_id, '(RFC822)')
-                if status != 'OK' or not msg_data or not msg_data[0]:
-                    logging.warning(f"Fetch falló para {correo_id}")
+            for msg_id in ids:
+                # 4) FETCH con BODY.PEEK[] para no setear \Seen
+                typ, msg_data = self.mail.fetch(msg_id, '(BODY.PEEK[] INTERNALDATE FLAGS)')
+                if typ != 'OK' or not msg_data:
+                    logging.warning(f"Fetch falló para id={msg_id}: {typ}, {msg_data!r}")
                     continue
 
-                raw_mail = msg_data[0][1]
+                # 5) Extraer el cuerpo raw del primer tuple válido
+                raw_mail = None
+                for part in msg_data:
+                    if isinstance(part, tuple) and len(part) == 2 and part[1]:
+                        raw_mail = part[1]
+                        break
+                if raw_mail is None:
+                    logging.warning(f"No se encontró BODY para id={msg_id} (msg_data={msg_data!r})")
+                    continue
+
                 msg = email.message_from_bytes(raw_mail)
 
-                # Asunto robusto
+                # 6) Decodificación robusta de Subject
                 raw_subject = msg.get('Subject', '')
                 try:
                     subject = str(make_header(decode_header(raw_subject)))
                 except Exception:
                     subject = raw_subject
 
-                remitente = msg.get('From', '')
+                remitente = msg.get('From', '') or ''
+                fecha = msg.get('Date', '') or ''
 
-                if (subject.startswith('INFO: Drone Landed') or subject.startswith('INFO: Drone take off')) and ((
-                    'no-reply@flytbase.com' in remitente) or 'drone01@nqnpetrol.com' in remitente):
+                # 7) Filtro FlytBase
+                if (('Drone Landed' in subject) or ('Drone take off' in subject)) and (
+                    'no-reply@flytbase.com' in remitente or 'drone01@nqnpetrol.com' in remitente
+                ):
                     correos_leer.append({
-                        'id': correo_id,
+                        'id': msg_id,           # secuencia, no UID
                         'asunto': subject,
                         'remitente': remitente,
-                        'fecha': msg.get('Date', ''),
+                        'fecha': fecha,
                         'mensaje': msg,
                     })
                     logging.info(f"FlytBase OK: {subject}")
@@ -90,9 +121,14 @@ class MonitorearCorreo:
 
             logging.info(f"Total FlytBase a procesar: {len(correos_leer)}")
             return correos_leer
-        except Exception as e:
-            logging.error(f"Error en buscar_correos: {e}")
+
+        except imaplib.IMAP4.error as e:
+            logging.error(f"IMAP error: {e}")
             return []
+        except Exception as e:
+            logging.error(f"Error en buscar_correos: {e}", exc_info=True)
+            return []
+
 
     def obtener_cuerpo_correo(self, mensaje) -> str:
         try:
@@ -230,14 +266,12 @@ class MonitorearCorreo:
 
                 # → Acá iría tu lógica: guardar en DB, enviar a API, etc.
                 print(datos)
-                handler.agregarDatos(datos) 
-                print("ahora aca")
-
+                #handler.agregarDatos(datos) 
+                
                 # marcar leído solo si procesó ok
                 self.marcar_como_leido(correo['id'])
 
             except Exception as e:
-                print("estoy aca")
                 logging.error(f"Error procesando {correo['id']}: {e}")
 
         return True
@@ -267,7 +301,7 @@ class MonitorearCorreo:
                 time.sleep(60)
 
 
-def main(intervalo=10):
+def main(intervalo=5):
     monitor = MonitorearCorreo()
     monitor.ejecutar(intervalo=intervalo)
 

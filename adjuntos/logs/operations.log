@@ -1,63 +1,23 @@
-2025-11-05 22:11:53 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 22:13:13 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 22:13:16 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 22:13:27 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:13:27 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
-2025-11-05 22:13:35 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:16:16 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 22:16:18 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 22:16:24 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:16:30 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:16:30 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
-2025-11-05 22:16:36 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:16:38 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
-2025-11-05 22:40:49 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 22:40:51 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 22:40:55 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:40:55 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
-2025-11-05 22:45:16 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 22:45:17 | INFO | [ClientBot] Ignorando mensajes previos al arranque | {"total": 2}
-2025-11-05 22:45:52 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:45:52 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
-2025-11-05 22:46:05 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:46:05 | INFO | [ClientBot] Sesión finalizada | {"chat_id": -4819082004, "duration_seconds": 12}
-2025-11-05 22:46:05 | INFO | [ClientBot] Cierre de sesión solicitado | {"chat_id": -4819082004}
-2025-11-05 22:46:27 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 22:46:28 | INFO | [ClientBot] Ignorando mensajes previos al arranque | {"total": 1}
-2025-11-05 22:46:33 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:46:33 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
-2025-11-05 22:46:40 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:50:17 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 22:50:17 | INFO | [ClientBot] Ignorando mensajes previos al arranque | {"total": 2}
-2025-11-05 22:50:22 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:50:22 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
-2025-11-05 22:50:29 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
-2025-11-05 22:50:31 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
-2025-11-05 23:07:16 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:07:18 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:13:07 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:13:08 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:14:55 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:14:57 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:16:49 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:16:51 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:28:02 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:28:04 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:29:38 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…True
-2025-11-05 23:29:40 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:30:46 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…True
-2025-11-05 23:30:48 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:31:14 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…True
-2025-11-05 23:31:16 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:32:06 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:32:08 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:32:29 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:32:30 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:34:39 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:34:41 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:36:41 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:36:42 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:40:54 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:40:55 | INFO | [ClientBot] No hay mensajes pendientes al inicio
-2025-11-05 23:43:05 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
-2025-11-05 23:43:07 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-06 08:51:00 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-06 08:51:03 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-06 08:55:50 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-06 08:55:52 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-06 08:56:05 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-06 08:56:05 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
+2025-11-06 08:56:12 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-06 09:39:27 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-06 09:39:29 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-06 09:39:42 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-06 09:39:42 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
+2025-11-06 09:39:49 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-06 09:39:51 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-06 10:14:18 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-06 10:14:20 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-06 10:14:43 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-06 10:14:45 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-06 10:15:54 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-06 10:15:56 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-06 10:16:21 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-06 10:16:21 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
+2025-11-06 10:16:27 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-06 10:16:29 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}

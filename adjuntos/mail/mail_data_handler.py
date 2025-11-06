@@ -1,40 +1,54 @@
+from collections import deque
+import threading
+
 class DataHandler:
     def __init__(self):
-        self.colaDatos = []  
+        self.colaDatos = deque()
+        self._lock = threading.Lock()
 
     def agregarDatos(self, datos):
-        self.colaDatos.append(datos)
+        with self._lock:
+            self.colaDatos.append(datos)
 
     def flushColaDatos(self):
-        self.colaDatos.clear()
+        with self._lock:
+            self.colaDatos.clear()
 
-    def popColaDatos(self):
-        if not self.colaDatos:
-            return None
-        return self.colaDatos.pop(0)
-    
     def colaVacia(self):
-        return not bool(self.colaDatos)
-    
-    def getColaDatos(self):
-        return self.colaDatos
-    
-    def obtenerDatosLanded(self):
-        dato = self.popColaDatos()
-        if not dato:
-            return None
-        if dato.get('drone') == 'LANDED' and 'Perimetro Planta' in dato.get('flight_details'):
-            return dato
-        else: 
-            return None
-        
-    def obtenerDatosTakeOff(self):
-        dato = self.popColaDatos()
-        if dato.get('drone') == 'take off' and 'Perimetro Planta' in dato.get('flight_details'):
-            return dato
-        else: 
-            return {}
-        
-    
-handler = DataHandler()
+        with self._lock:
+            return not bool(self.colaDatos)
 
+    def getColaDatos(self):
+        with self._lock:
+            return list(self.colaDatos)
+
+    def _es_landed(self, d, mission_substr='Perimetro Planta'):
+        drone = (d.get('drone') or '').strip().lower().replace(' ', '').replace('-', '')
+        msg   = (d.get('message') or '').casefold()
+        det   = (d.get('flight_details') or '')
+        return (('landed' in drone or 'land' in msg) and mission_substr in det)
+
+    def _es_takeoff(self, d, mission_substr='Perimetro Planta'):
+        drone = (d.get('drone') or '').strip().lower().replace(' ', '').replace('-', '')
+        msg   = (d.get('message') or '').casefold()
+        det   = (d.get('flight_details') or '')
+        return ((drone == 'takeoff' or 'take off' in msg or 'takeoff' in msg or 'airborne' in msg)
+                and mission_substr in det)
+
+    def obtenerDatosLanded(self, mission_substr='Perimetro Planta'):
+        with self._lock:
+            for d in list(self.colaDatos):
+                if self._es_landed(d, mission_substr):
+                    self.colaDatos.remove(d)  # <-- en deque, remove() elimina la primera coincidencia
+                    return d
+        return None
+
+    def obtenerDatosTakeOff(self, mission_substr='Perimetro Planta'):
+        with self._lock:
+            for d in list(self.colaDatos):
+                if self._es_takeoff(d, mission_substr):
+                    self.colaDatos.remove(d)
+                    return d
+        return None
+
+handler = DataHandler()
