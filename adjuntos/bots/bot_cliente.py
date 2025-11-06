@@ -4,6 +4,7 @@ import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional, List, Tuple
 import re
+from mail.mail_data_handler import handler
 
 import requests
 
@@ -11,7 +12,9 @@ import jsonsender
 from utils.logger import log_error, log_operation
 
 # ================== Config ==================
-BOT_TOKEN = "8242825417:AAHS5y43tAG5KV3Btadx1Kvz7nRXvFkFyAg"
+#bot brunobauti 8152369007:AAEnROhZ5yTFtBN_LT7Rd-7w5EoU-BpFLIU
+#botnqn 8242825417:AAHS5y43tAG5KV3Btadx1Kvz7nRXvFkFyAg
+BOT_TOKEN = "8152369007:AAEnROhZ5yTFtBN_LT7Rd-7w5EoU-BpFLIU"
 URL_BASE = f"https://api.telegram.org/bot{BOT_TOKEN}/"
 
 POLL_TIMEOUT = 30          # long polling
@@ -19,7 +22,7 @@ SLEEP_BETWEEN_POLLS = 4    # para no ciclar fuerte
 SESSION_TTL_SECS = 180     # ⏳ duración de la ventana (ajustá a gusto)
 
 MISSION_DURATION = 12 * 60  # ~12 minutos
-mission_running = False
+mission_running = True
 mission_start_time = 0.0
 current_mission_name: Optional[str] = None
 
@@ -330,6 +333,25 @@ def handle_lista_misiones(chat_id: int):
         ),
     )
 
+def consumir_evento_takeoff():
+
+    while True:
+        datos = handler.obtenerDatosTakeOff()
+        if not datos:
+            print("todavía no llego el mail")
+            time.sleep(5)
+            continue
+        else:
+            return datos
+
+def consumir_evento_landed():
+    datos = handler.obtenerDatosLanded()
+    if not datos:
+        print("todavía no llego el mail de Landed")
+        return
+    else:
+        return datos   
+
 def handle_mision1(chat_id: int, user_name: str):
     global mission_running, mission_start_time, current_mission_name
 
@@ -350,7 +372,7 @@ def handle_mision1(chat_id: int, user_name: str):
                 chat_id,
                 (
                     "Operación rechazada.\n"
-                    "La misión 'Perímetro Planta' continúa en progreso.\n"
+                    "La misión 'Perimetro Planta' continúa en progreso.\n"
                     f"Volvé a intentarlo en {minutes} min {seconds} s."
                 ),
             )
@@ -367,6 +389,8 @@ def handle_mision1(chat_id: int, user_name: str):
         mission_running = True
         mission_start_time = time.time()
         current_mission_name = "mision1"
+        datos = consumir_evento_takeoff()
+
 
         client_log_operation(
             "Misión enviada correctamente",
@@ -382,6 +406,20 @@ def handle_mision1(chat_id: int, user_name: str):
                 "Bloqueo operativo activo hasta su finalización (~12 min)."
             ),
         )
+
+        send_message(
+            chat_id,
+            (          
+               f"DOCK: {datos.get('dock')} \n"
+               f"COORDENADAS: {datos.get('coordinates')} \n"
+               f"ORGANIZACIÓN: {datos.get('organization')} \n"
+               f"BATERIA DE DRON: {datos.get('drone_battery')} \n"
+               f"MISION: (Perimetro Planta) \n"
+               f"TIMESTAMP: {datos.get('timestamp')} \n"
+               f"SITE: {datos.get('site')} \n"
+            ),
+        )
+
 
     except requests.exceptions.RequestException as e:
         client_log_error(
@@ -466,6 +504,7 @@ def clear_pending_updates():
 
 # ================== Loop principal ==================
 def main():
+    global mission_running
     global offset
     client_log_operation("Bot iniciado con ventanas de conversación y control de misión…")
 
@@ -510,6 +549,29 @@ def main():
                 else:
                     handle_fallback(chat_id)
 
+        
+        if mission_running:
+            print("viendo que onda el mail Landed")
+            datos = consumir_evento_landed()
+            if  not datos:
+                continue
+            else:
+                mission_running = False
+                send_message(
+                chat_id,
+                (
+                    "DRON ATERRIZADO \n"
+                    f"DOCK: {datos.get('dock')} \n"
+                    f"COORDENADAS: {datos.get('coordinates')} \n"
+                    f"ORGANIZACIÓN: {datos.get('organization')} \n"
+                    f"BATERIA DE DRON: {datos.get('drone_battery')} \n"
+                    f"MISION: (Perimetro Planta) \n"
+                    f"TIMESTAMP: {datos.get('timestamp')} \n"
+                    f"SITE: {datos.get('site')} \n"
+                ),
+            )
+
+                
         time.sleep(SLEEP_BETWEEN_POLLS)
 
 if __name__ == "__main__":

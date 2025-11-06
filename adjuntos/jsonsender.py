@@ -5,7 +5,8 @@ import requests
 def enviar():
     # URL de FlytBase
        # URL de FlytBase
-    url = "https://api.flytbase.com/v2/integrations/webhook/6900081026671ac289bfd766"
+       
+    url = ""
 
     # Headers con tu token de autorización
     headers = {
