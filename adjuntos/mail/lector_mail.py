@@ -7,7 +7,8 @@ import imaplib
 import email
 from email.header import decode_header, make_header
 from email.utils import parsedate_to_datetime
-#from .mail_data_handler import handler
+from mail.mail_data_handler import handler
+
 
 from datetime import datetime
 
@@ -265,7 +266,8 @@ class MonitorearCorreo:
                     continue
 
                 # → Acá iría tu lógica: guardar en DB, enviar a API, etc.
-                print(datos)
+                print("[DEBUG] Agregando al handler:", datos)
+                handler.agregarDatos(datos)
                 #handler.agregarDatos(datos) 
                 
                 # marcar leído solo si procesó ok
@@ -300,11 +302,3 @@ class MonitorearCorreo:
                 logging.error(f"Error en loop: {e}")
                 time.sleep(60)
 
-
-def main(intervalo=5):
-    monitor = MonitorearCorreo()
-    monitor.ejecutar(intervalo=intervalo)
-
-
-if __name__ == "__main__":
-    main()

@@ -50,5 +50,18 @@ class DataHandler:
                     self.colaDatos.remove(d)
                     return d
         return None
+    
+    def flush(self):
+        """Elimina todos los datos almacenados."""
+        with self._lock:
+            self.colaDatos.clear()
+
+
+    def obtenerTodosLosEventos(self):
+        """Devuelve una lista con todos los eventos acumulados en la cola."""
+        with self._lock:
+            return list(self.colaDatos)
+
+
 
 handler = DataHandler()

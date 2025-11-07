@@ -21,3 +21,91 @@
 2025-11-06 10:16:21 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bruno"}
 2025-11-06 10:16:27 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
 2025-11-06 10:16:29 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 12:10:30 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 12:10:31 | INFO | [ClientBot] Ignorando mensajes previos al arranque | {"total": 2}
+2025-11-07 12:10:41 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:10:41 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 12:10:48 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:10:50 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 12:21:30 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 12:21:32 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-07 12:23:34 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 12:23:36 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-07 12:23:42 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:23:42 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 12:23:48 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:23:50 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 12:24:00 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:25:00 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:25:03 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:25:51 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:25:54 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 12:28:37 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:12:24 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 13:12:26 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-07 13:12:41 | INFO | [BotReportes] Iniciando bot de reportes diarios…
+2025-11-07 13:12:41 | INFO | [BotReportes] Iniciando monitoreo de correos (modo autónomo)…
+2025-11-07 13:12:41 | INFO | [BotReportes] Próximo reporte programado en 0.49h
+2025-11-07 13:13:02 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:13:02 | INFO | [ClientBot] Cierre de sesión solicitado | {"chat_id": -4819082004}
+2025-11-07 13:13:08 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 2}
+2025-11-07 13:13:08 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 13:13:16 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:13:18 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 13:20:27 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 13:20:27 | INFO | [ClientBot] Ignorando mensajes previos al arranque | {"total": 1}
+2025-11-07 13:20:39 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:20:39 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 13:20:46 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:20:48 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 13:25:26 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 13:25:26 | INFO | [ClientBot] Ignorando mensajes previos al arranque | {"total": 1}
+2025-11-07 13:25:29 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:25:29 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 13:25:36 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:25:38 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 13:32:24 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 13:32:24 | INFO | [ClientBot] Ignorando mensajes previos al arranque | {"total": 1}
+2025-11-07 13:32:28 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:32:28 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 13:32:35 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:32:37 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 13:32:50 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:32:50 | INFO | [ClientBot] Sesión finalizada | {"chat_id": -4819082004, "duration_seconds": 21}
+2025-11-07 13:32:50 | INFO | [ClientBot] Cierre de sesión solicitado | {"chat_id": -4819082004}
+2025-11-07 13:32:59 | INFO | [BotReportes] Iniciando bot de reportes diarios…
+2025-11-07 13:32:59 | INFO | [BotReportes] Iniciando monitoreo de correos (modo autónomo)…
+2025-11-07 13:32:59 | INFO | [BotReportes] Próximo reporte programado en 0.32h
+2025-11-07 13:33:13 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 13:33:14 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-07 13:33:22 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:33:22 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 13:33:29 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:33:31 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 13:35:30 | INFO | [BotReportes] Iniciando bot de reportes diarios…
+2025-11-07 13:35:30 | INFO | [BotReportes] Iniciando monitoreo de correos (modo autónomo)…
+2025-11-07 13:35:30 | INFO | [BotReportes] Próximo reporte programado en 0.32h
+2025-11-07 13:35:35 | INFO | [ClientBot] Bot iniciado con ventanas de conversación y control de misión…
+2025-11-07 13:35:37 | INFO | [ClientBot] No hay mensajes pendientes al inicio
+2025-11-07 13:35:41 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:35:41 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 13:35:48 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:35:50 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 13:45:19 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:45:19 | INFO | [ClientBot] Sesión iniciada | {"chat_id": -4819082004, "user_name": "Bautista"}
+2025-11-07 13:45:23 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:45:23 | INFO | [ClientBot] Intento de envío mientras misión activa | {"chat_id": -4819082004, "remaining_seconds": 147}
+2025-11-07 13:47:34 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:47:35 | INFO | [ClientBot] Intento de envío mientras misión activa | {"chat_id": -4819082004, "remaining_seconds": 15}
+2025-11-07 13:47:44 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:47:45 | INFO | [ClientBot] Intento de envío mientras misión activa | {"chat_id": -4819082004, "remaining_seconds": 5}
+2025-11-07 13:47:47 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:47:48 | INFO | [ClientBot] Intento de envío mientras misión activa | {"chat_id": -4819082004, "remaining_seconds": 3}
+2025-11-07 13:47:54 | INFO | [ClientBot] Actualizaciones recibidas | {"total": 1}
+2025-11-07 13:47:54 | INFO | [ClientBot] Misión completada por duración programada | {"mission": "mision1", "elapsed_seconds": 723}
+2025-11-07 13:47:55 | INFO | [ClientBot] Misión enviada correctamente | {"chat_id": -4819082004, "mission": "mision1", "response": {"message": "Alarm Triggered Successfully"}}
+2025-11-07 13:55:00 | INFO | [BotReportes] Generando reporte diario…
+2025-11-07 13:55:00 | INFO | [BotReportes] Backup guardado en /home/bauti/Proyectos GITHUB/Telegram Mail/adjuntos/adjuntos/logs/reportes/2025-11-07.json
+2025-11-07 13:55:00 | INFO | [BotReportes] Handler limpiado tras generar reporte diario
+2025-11-07 13:55:00 | INFO | [BotReportes] Reporte diario enviado con éxito
+2025-11-07 13:55:00 | INFO | [BotReportes] Próximo reporte programado en 24.00h

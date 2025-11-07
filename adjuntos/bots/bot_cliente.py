@@ -1,15 +1,27 @@
 # bots/bot_cliente.py
+import os
+import sys
 import json
 import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional, List, Tuple
 import re
-from mail.mail_data_handler import handler
-
+import threading
 import requests
 
-import jsonsender
-from utils.logger import log_error, log_operation
+
+
+# --- Ajuste de path para que Python reconozca el root (adjuntos/) ---
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+# --- Imports locales del proyecto ---
+from mail.lector_mail import MonitorearCorreo  
+from mail.mail_data_handler import handler     # Lector IMAP de correos FlytBase
+from utils.logger import log_error, log_operation   # Logger personalizado
+import jsonsender                                   # Módulo que envía misiones a FlytBase
+
 
 # ================== Config ==================
 #bot brunobauti 8152369007:AAEnROhZ5yTFtBN_LT7Rd-7w5EoU-BpFLIU
@@ -491,14 +503,16 @@ def clear_pending_updates():
 
 # ================== Loop principal ==================
 def main():
-    global mission_running
-    global offset
-    global mission_chat_id
-    global waiting_takeoff
+    global mission_running, offset, mission_chat_id, waiting_takeoff
 
     client_log_operation("Bot iniciado con ventanas de conversación y control de misión…")
 
+    monitor = MonitorearCorreo()
+    threading.Thread(target=monitor.ejecutar, kwargs={"intervalo": 60}, daemon=True).start()
+
     clear_pending_updates()
+    ...
+
 
     while True:
         print(f"mission chat id es {mission_chat_id}")

@@ -1,0 +1,82 @@
+[
+  {
+    "event_id": "eEjLjf42",
+    "message": "Drone has successfully landedSeverity:",
+    "severity": "INFO",
+    "drone": "Landed",
+    "dock": "CAM-DOCK1",
+    "coordinates": "39.00606500, -67.88134134",
+    "site": "EFO",
+    "organization": "QNT-Drones",
+    "automation": "Notificaciones EFO",
+    "drone_battery": "45%",
+    "flight_details": "Alarm Response Mission (Perimetro Planta) - Gonzalo Rodriguez",
+    "timestamp": "Fri, 07 Nov 2025 16:35:07 GMT",
+    "drone_normalizado": "Landed",
+    "event_coordinates": {
+      "latitude": 39.006065,
+      "longitude": -67.88134134
+    },
+    "event_timestamp": "2025-11-07T16:35:07+00:00"
+  },
+  {
+    "event_id": "c0XcZItP",
+    "message": "Drone has successfully taken offSeverity:",
+    "severity": "INFO",
+    "drone": "take off",
+    "dock": "CAM-DOCK1",
+    "coordinates": "39.00606497, -67.88134191",
+    "site": "EFO",
+    "organization": "QNT-Drones",
+    "automation": "Notificaciones EFO",
+    "drone_battery": "45%",
+    "flight_details": "Alarm Response Mission (Perimetro Planta) - Gonzalo Rodriguez",
+    "timestamp": "Fri, 07 Nov 2025 16:36:03 GMT",
+    "drone_normalizado": "take off",
+    "event_coordinates": {
+      "latitude": 39.00606497,
+      "longitude": -67.88134191
+    },
+    "event_timestamp": "2025-11-07T16:36:03+00:00"
+  },
+  {
+    "event_id": "kzVMx5SX",
+    "message": "Drone has successfully landedSeverity:",
+    "severity": "INFO",
+    "drone": "Landed",
+    "dock": "CAM-DOCK1",
+    "coordinates": "39.00606510, -67.88134190",
+    "site": "EFO",
+    "organization": "QNT-Drones",
+    "automation": "Notificaciones EFO",
+    "drone_battery": "24%",
+    "flight_details": "Alarm Response Mission (Perimetro Planta) - Gonzalo Rodriguez",
+    "timestamp": "Fri, 07 Nov 2025 16:44:33 GMT",
+    "drone_normalizado": "Landed",
+    "event_coordinates": {
+      "latitude": 39.0060651,
+      "longitude": -67.8813419
+    },
+    "event_timestamp": "2025-11-07T16:44:33+00:00"
+  },
+  {
+    "event_id": "pCDrHjh6",
+    "message": "Drone has successfully taken offSeverity:",
+    "severity": "INFO",
+    "drone": "take off",
+    "dock": "CAM-DOCK1",
+    "coordinates": "39.00606506, -67.88134197",
+    "site": "EFO",
+    "organization": "QNT-Drones",
+    "automation": "Notificaciones EFO",
+    "drone_battery": "30%",
+    "flight_details": "Alarm Response Mission (Perimetro Planta) - Gonzalo Rodriguez",
+    "timestamp": "Fri, 07 Nov 2025 16:48:15 GMT",
+    "drone_normalizado": "take off",
+    "event_coordinates": {
+      "latitude": 39.00606506,
+      "longitude": -67.88134197
+    },
+    "event_timestamp": "2025-11-07T16:48:15+00:00"
+  }
+]
