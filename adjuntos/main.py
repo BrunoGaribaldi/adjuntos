@@ -1,8 +1,8 @@
 import threading
 import time
 
-from bots.bot_cliente import main as run_client_bot
-from bots.bot_notificador import monitor_log
+from bots.CLIENTE.bot_cliente import main as run_client_bot
+from bots.NOTIFICADOR.bot_notificador import monitor_log
 from mail.lector_mail import main as run_mail_lector
 
 

@@ -20,7 +20,7 @@ if BASE_DIR not in sys.path:
 from mail.lector_mail import MonitorearCorreo  
 from mail.mail_data_handler import handler     # Lector IMAP de correos FlytBase
 from utils.logger import log_error, log_operation   # Logger personalizado
-import jsonsender                                   # Módulo que envía misiones a FlytBase
+import utils.jsonsender as jsonsender                                   # Módulo que envía misiones a FlytBase
 
 
 # ================== Config ==================
