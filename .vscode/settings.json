@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./adjuntos/mail/mail_",
+        "./adjuntos/mail/mail_"
+    ]
+}
