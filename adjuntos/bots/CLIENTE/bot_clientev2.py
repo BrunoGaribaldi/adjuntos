@@ -9,26 +9,87 @@ import threading
 import requests
 import config
 from mail.lector_mail import MonitorearCorreo  
-from mail.mail_data_handler import handler     
-from utils.logger import log_error, log_operation   
-import utils.jsonsender as jsonsender   
-
-
-
-# ======================= LOGS =======================
-def client_log_operation(message: str, **context: Any) -> None:
-    log_operation(f"[ClientBot] {message}", **context)
-
-def client_log_error(message: str, **context: Any) -> None:
-    log_error(f"[ClientBot] {message}", **context)
-
+from mail.mail_data_handler import handler      
+import adjuntos.bots.CLIENTE.jsonsender as jsonsender  
+import logs 
+import status_misiones
+import lista_misiones as misiones
+import UI
 
 # ================== Loop principal ==================
 def main():
+    # Cargamos el estado de las misiones con configuraciones default.
+    status_misiones.MISION_STATUS = status_misiones.build_status(misiones.MISIONS)
+
+    # Cargamos la UI con las misiones cargadas.
+    UI.setMainMenuChat(misiones.MISIONS)
+    UI.setMainMenuKeyboard(misiones.MISIONS)
+
+    # Ignoramos mensajes viejos.
+    clear_pending_updates()
+
+
+    logs.client_log_operation("Bot iniciado con ventanas de conversación y control de misión…")
 
     while True:
-        return
+        updates = get_updates(config.OFFSET)
+        if updates:
+            for update in updates:
+                config.OFFSET = update["update_id"] + 1
 
+                if "message" not in update:
+                    continue
+
+                message = update["message"]
+                mission_chat_id = message["chat"]["id"]
+                text = (message.get("text") or "").strip()
+                user_name = message["from"].get("first_name", "Desconocido")
+
+
+                if not is_session_active(mission_chat_id) and mission_chat_id in config.SESSIONS:
+                    end_session(mission_chat_id)
+                    remove_keyboard(mission_chat_id, "La ventana expiró por inactividad. Escribí 'hola' para empezar de nuevo.")
+
+                lower = text.lower()
+                if lower in ("/start", "hola"):
+                    handle_start_or_hola(mission_chat_id, user_name)
+                elif lower == "lista de misiones":
+                    handle_lista_misiones(mission_chat_id)
+                elif lower == "mision1":
+                    handle_mision1(mission_chat_id, user_name)
+                elif lower == "estado":
+                    handle_estado(mission_chat_id)
+                elif lower in ("cerrar", "/cerrar"):
+                    handle_cerrar(mission_chat_id)
+                elif lower == "soporte":
+                    prompt_support_opt_in(mission_chat_id)
+                else:
+                    handle_fallback(mission_chat_id)
+
+
+        time.sleep(config.SLEEP_BETWEEN_POLLS)
+
+
+        
+# ================== Ignorar mensajes viejos ==================
+def clear_pending_updates():
+    try:
+        url = f"{config.URL_BASE}getUpdates?timeout=1"
+        r = requests.get(url, timeout=3)
+        r.raise_for_status()
+        data = r.json().get("result", [])
+
+        if data:
+            # actualizás el OFFSET que vive en config
+            config.OFFSET = data[-1]["update_id"] + 1
+            logs.client_log_operation(
+                "Ignorando mensajes previos al arranque", total=len(data)
+            )
+        else:
+            logs.client_log_operation("No hay mensajes pendientes al inicio")
+
+    except Exception as e:
+        logs.client_log_error("Error al limpiar mensajes pendientes", error=str(e))
 
 
 
@@ -49,17 +110,17 @@ def get_updates(offset_value: int) -> List[Dict[str, Any]]:
         resp.raise_for_status()
         result = resp.json().get("result", [])
         if result:
-            client_log_operation("Actualizaciones recibidas", total=len(result))
+            logs.client_log_operation("Actualizaciones recibidas", total=len(result))
         return result
     except requests.exceptions.HTTPError as e:
         status = getattr(e.response, "status_code", None)
         if status == 409:
-            client_log_error("Error 409: Bot activo en otra instancia", error=str(e))
+            logs.client_log_error("Error 409: Bot activo en otra instancia", error=str(e))
         else:
-            client_log_error("Error HTTP inesperado al pedir updates", error=str(e), status_code=status)
+            logs.client_log_error("Error HTTP inesperado al pedir updates", error=str(e), status_code=status)
         return []
     except Exception as e:
-        client_log_error("Error general al pedir updates", error=str(e))
+        logs.client_log_error("Error general al pedir updates", error=str(e))
         return []
     
 #  ------------- Enviar Mensaje en Chat -------------
@@ -72,7 +133,10 @@ def send_message(chat_id: int, text: str, reply_markup: Optional[Dict[str, Any]]
         r = requests.post(url, data=data, timeout=10)
         r.raise_for_status()
     except requests.RequestException as e:
-        client_log_error("Error al enviar mensaje", chat_id=chat_id, error=str(e), payload=text)
+        logs.client_log_error("Error al enviar mensaje", chat_id=chat_id, error=str(e), payload=text)
+
+def remove_keyboard(chat_id: int, text: str = "Ventana cerrada. Escribí 'hola' para empezar de nuevo."):
+    send_message(chat_id, text, reply_markup={"remove_keyboard": True})
 
 
 
@@ -93,7 +157,6 @@ def is_session_active(chat_id: int) -> bool:
         return False
     return True
 
-
 # Renueva el vencimiento de la sesión cada vez que el usuario interactúa.
 def touch_session(chat_id: int) -> None:
     if chat_id in config.SESSIONS:
@@ -106,12 +169,12 @@ def start_session(chat_id: int, user_name: str) -> None:
         "expires_at": now() + timedelta(seconds=config.SESSION_TTL_SECS),
         "user_name": user_name,
     }
-    client_log_operation("Sesión iniciada", chat_id=chat_id, user_name=user_name)
+    logs.client_log_operation("Sesión iniciada", chat_id=chat_id, user_name=user_name)
 
 # Finaliza la sesión y la elimina de memoria.
 def end_session(chat_id: int) -> None:
     session = config.SESSIONS.pop(chat_id, None)
-    client_log_operation(
+    logs.client_log_operation(
         "Sesión finalizada",
         chat_id=chat_id,
         duration_seconds=int((now() - session["started_at"]).total_seconds()) if session else None

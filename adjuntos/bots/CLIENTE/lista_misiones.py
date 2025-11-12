@@ -23,31 +23,10 @@ MISIONS = {
                 "temperature": 50.2,
                 "battery_level": 80
             }
-        },
-
-
-        "status":{
-           "mission_running": False,
-           "mission_start_time": 0.0,
-           "mission_chat_id": None,
-           "waiting_takeoff": False 
-        }
+        }      
     }
 }
 
 
-def getMisiones ():
-    return MISIONS
 
-
-#despues a esto lo usas asi:
-#mision1 = getMisionParticular("mision1")
-#mision1["url"]
-#mision1["headers"]["Authorization"]
-
-def getMisionParticular(mision):
-    return MISIONS[mision]
-
-def getLink():
-    return LINK_RTCP
 
