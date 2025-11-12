@@ -15,6 +15,7 @@ import logs
 import status_misiones
 import lista_misiones as misiones
 import UI
+import adjuntos.bots.CLIENTE.user_mision_handler as user_mision_handler
 
 # ================== Loop principal ==================
 def main():
@@ -50,27 +51,216 @@ def main():
                     end_session(mission_chat_id)
                     remove_keyboard(mission_chat_id, "La ventana expiró por inactividad. Escribí 'hola' para empezar de nuevo.")
 
-                lower = text.lower()
+                lower = (text or "").lower().strip()
+
                 if lower in ("/start", "hola"):
                     handle_start_or_hola(mission_chat_id, user_name)
+
                 elif lower == "lista de misiones":
-                    handle_lista_misiones(mission_chat_id)
-                elif lower == "mision1":
-                    handle_mision1(mission_chat_id, user_name)
+                    #a esto hay que agregarle los chequeos de maill
+                    #TODO
+                    #handle_lista_misiones(mission_chat_id)
+                    pass
+
                 elif lower == "estado":
-                    handle_estado(mission_chat_id)
+                    #TODO
+                    #a esto tmb hay que agregar los chequeos de mail
+                    #handle_estado(mission_chat_id)
+                    pass
+
                 elif lower in ("cerrar", "/cerrar"):
                     handle_cerrar(mission_chat_id)
+
                 elif lower == "soporte":
-                    prompt_support_opt_in(mission_chat_id)
+                    #TODO
+                    pass
+                    #prompt_support_opt_in(mission_chat_id)
+                
                 else:
-                    handle_fallback(mission_chat_id)
+
+                    mission_key = user_mision_handler.resolve_mission_key(lower,misiones.MISIONS)
+
+                    if mission_key:
+                        handle_mision(mission_key, mission_chat_id, user_name)
+                
+                    else:
+                        handle_fallback(mission_chat_id)
 
 
         time.sleep(config.SLEEP_BETWEEN_POLLS)
 
+# ================== Enviar Mision ==================
+#TODO
+def handle_mision(mission_key: str,chat_id: int, user_name: str):
+    m = misiones.MISIONS
+    nombre = m.get("name", mission_key)
 
-        
+    if not is_session_active(chat_id):
+        remove_keyboard(chat_id, "Tu ventana estaba cerrada por inactividad. Escribí 'hola' para abrir una nueva.")
+        return
+    
+    #renovamos ventana
+    touch_session(chat_id)
+
+    send_message(chat_id, f"Iniciando misión: {nombre}")
+
+    #actualizamos el estado
+    """ user_mision_handler.update_mission_state(mission_key)
+    estado = status_misiones.MISION_STATUS.get(mission_key) #estado de mision.
+ """
+    #aca verificamos que una misión en particular no este volando, pero enrealidad tenemos que verificar que ninguna haya volando.
+    """ if estado["status"]["mission_running"]:
+        elapsed = time.time() - estado["status"]["mission_start_time"]
+        remaining = int(misiones.MISIONS[mission_key]["duracion"] - elapsed)
+
+        if remaining > 0:
+            minutes, seconds = divmod(remaining, 60)
+            send_message(
+                chat_id,
+                (
+                    "Operación rechazada.\n"
+                    "La misión 'Perimetro Planta' continúa en progreso.\n"
+                    f"Volvé a intentarlo en {minutes} min {seconds} s."
+                ),
+            )
+            logs.client_log_operation(
+                "Intento de envío mientras misión activa",
+                chat_id=chat_id,
+                remaining_seconds=remaining,
+            )
+            return """
+
+
+    send_message(chat_id, "Iniciando misión programada")
+    try:
+        response = jsonsender.enviar()
+        mission_running = True
+        mission_start_time = time.time()
+        current_mission_name = "mision1"
+        waiting_takeoff = True
+
+
+        logs.client_log_operation(
+            "Misión enviada correctamente",
+            chat_id=chat_id,
+            mission=current_mission_name,
+            response=response,
+        )
+
+        send_message(
+            chat_id,
+            (
+                "Misión 'Perímetro Planta' enviada correctamente.\n"
+                "Bloqueo operativo activo hasta su finalización (~12 min)."
+            ),
+        )
+
+
+    except requests.exceptions.RequestException as e:
+        logs.client_log_error(
+            "Error de comunicación con FlytBase",
+            chat_id=chat_id,
+            mission="mision1",
+            error=str(e),
+        )
+        send_message(
+            chat_id,
+            (
+                "No se pudo enviar la misión a FlytBase.\n"
+                "Contactaremos al soporte.\n\n"
+                "¿Querés que te contacten por WhatsApp para una atención personalizada?"
+            ),
+        )
+        #modulo wp TODO
+        #prompt_support_opt_in(chat_id)
+
+    except Exception as e:
+        logs.client_log_error(
+            "Error inesperado al procesar misión",
+            chat_id=chat_id,
+            mission="mision1",
+            error=str(e),
+        )
+        send_message(
+            chat_id,
+            (
+                "Se produjo un error inesperado al programar la misión.\n"
+                "Contactaremos al soporte.\n\n"
+                "¿Querés que te contacten por WhatsApp para una atención personalizada?"
+            ),
+        )
+        #modulo wp TODO
+        #prompt_support_opt_in(chat_id)
+
+
+# ================== Otras Respuestas ==================
+#RESPONDEMOS A MENSAJE HOLA
+def handle_start_or_hola(chat_id: int, user_name: str):
+    if is_session_active(chat_id):
+        touch_session(chat_id)
+        send_message(chat_id, f"Ya tenés una ventana activa, {user_name}. Usá el menú o escribí 'cerrar' para reiniciar.")
+        return
+    start_session(chat_id, user_name)
+    send_message(
+        chat_id,
+        (
+            f"Hola, {user_name} 👋 Soy el bot operacional de NQNPetrol. "
+            f"Tenés una ventana de atención de {config.SESSION_TTL_SECS} segundos."
+        ),
+    )
+    send_message(chat_id,(UI.send_main_menu()),reply_markup=UI.main_menu_keyboard())
+
+#RESPONDEMOS A MENSAJE LISTA DE MISIONES
+def handle_lista_misiones(chat_id: int):
+    if not is_session_active(chat_id):
+        remove_keyboard(chat_id, "Tu ventana estaba cerrada por inactividad. Escribí 'hola' para abrir una nueva.")
+        return
+    touch_session(chat_id)
+    send_message(
+    chat_id,
+    (
+        "Misiones disponibles:\n"
+        f"{UI.MISIONES_DISPONIBLES}\n\n"
+        "Seleccioná la misión escribiendo o tocando 'mision1'."
+    )
+)
+
+#RESPONDEMOS A MENSAJE ESTADO
+#TODO
+def handle_estado(chat_id: int):
+    if not is_session_active(chat_id):
+        remove_keyboard(chat_id, "Tu ventana estaba cerrada por inactividad. Escribí 'hola' para abrir una nueva.")
+        return
+
+    touch_session(chat_id)
+    status_message = format_mission_status()
+    client_log_operation("Consulta de estado", chat_id=chat_id, status=status_message)
+    send_message(chat_id, status_message)
+
+def handle_cerrar(chat_id: int):
+    if is_session_active(chat_id):
+        end_session(chat_id)
+    logs.client_log_operation("Cierre de sesión solicitado", chat_id=chat_id)
+    remove_keyboard(chat_id)
+
+def handle_fallback(chat_id: int):
+    if is_session_active(chat_id):
+        touch_session(chat_id)
+        send_message(
+            chat_id,
+            (
+                "No pude interpretar el mensaje recibido.\n"
+                "Usá el menú para continuar o escribí 'Lista de misiones'."
+            ),
+        )
+        send_message(chat_id,(UI.send_main_menu()),reply_markup=UI.main_menu_keyboard())
+    else:
+        send_message(chat_id, "No hay ventana activa. Escribí 'hola' para abrir una nueva sesión operativa.")
+
+
+
+
+
 # ================== Ignorar mensajes viejos ==================
 def clear_pending_updates():
     try:

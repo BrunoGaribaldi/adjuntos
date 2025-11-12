@@ -373,7 +373,7 @@ def handle_mision1(chat_id: int, user_name: str):
 
     touch_session(chat_id)
     update_mission_state()
-
+    
     if mission_running:
         elapsed = time.time() - mission_start_time
         remaining = int(MISSION_DURATION - elapsed)

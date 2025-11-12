@@ -3,6 +3,19 @@ from typing import Dict, Any
 # ================== UI: Menú ==================
 MAIN_MENU_KEYBOARD: list[list[dict[str, str]]] = []
 MAIN_MENU_CHAT: str = ""
+MISIONES_DISPONIBLES: str = ""
+
+def set_lista_misiones(misions: Dict[str, Dict[str, Any]]) -> None:
+    """Genera una lista numerada con las misiones disponibles y la guarda en MISIONES_DISPONIBLES."""
+    global MISIONES_DISPONIBLES
+
+    lineas = []
+    for idx, (key, cfg) in enumerate(misions.items(), start=1):
+        nombre = cfg.get("name", key)
+        descripcion = cfg.get("descripcion", "Misión sin descripción.")
+        lineas.append(f"{idx}. {nombre} — {descripcion}")
+
+    MISIONES_DISPONIBLES = "\n".join(lineas)
 
 def set_main_menu_keyboard(misions: Dict[str, Dict[str, Any]], cols: int = 1) -> None:
     """Construye el teclado principal usando los NOMBRES de las misiones."""

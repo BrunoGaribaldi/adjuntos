@@ -23,7 +23,11 @@ MISIONS = {
                 "temperature": 50.2,
                 "battery_level": 80
             }
-        }      
+        }, 
+
+        "descripcion": "Patrulla automática del perímetro",
+        "dron": "dji-123",
+        "site": "EFO" 
     }
 }
 
