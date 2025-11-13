@@ -9,12 +9,14 @@ import threading
 import requests
 import config
 from mail.lector_mail import MonitorearCorreo  
+from mail.mail_state_sync import sync_mission_status  
 from mail.mail_data_handler import handler      
 import adjuntos.bots.CLIENTE.jsonsender as jsonsender  
 import logs 
 import status_misiones
 import lista_misiones as misiones
 import UI
+from status_misiones import DRONE_STATE
 import adjuntos.bots.CLIENTE.user_mision_handler as user_mision_handler
 
 # ================== Loop principal ==================
@@ -31,6 +33,27 @@ def main():
 
 
     logs.client_log_operation("Bot iniciado con ventanas de conversación y control de misión…")
+
+    # =============================
+    # HILOS PARA MAIL Y SINCRONIZACIÓN
+    # =============================
+
+    # Hilo A: Lee correos cada 30 segundos
+    correo = MonitorearCorreo()
+    threading.Thread(
+        target=correo.ejecutar,
+        args=(30,),      
+        daemon=True
+    ).start()
+    logs.client_log_operation("Hilo de monitoreo de correo iniciado")
+
+    # Hilo  B: Sincroniza estado de misiones cada 10 segundos
+    threading.Thread(
+        target=sync_mission_status,
+        args=(10,),        
+        daemon=True
+    ).start()
+    logs.client_log_operation("Hilo de sincronización de misiones iniciado")
 
     while True:
         updates = get_updates(config.OFFSET)
@@ -91,106 +114,89 @@ def main():
 
 # ================== Enviar Mision ==================
 #TODO
-def handle_mision(mission_key: str,chat_id: int, user_name: str):
-    m = misiones.MISIONS
-    nombre = m.get("name", mission_key)
+def handle_mision(mission_key: str, chat_id: int, user_name: str):
 
+    # 1) Chequear ventana activa
     if not is_session_active(chat_id):
-        remove_keyboard(chat_id, "Tu ventana estaba cerrada por inactividad. Escribí 'hola' para abrir una nueva.")
+        remove_keyboard(chat_id, 
+            "Tu ventana estaba cerrada por inactividad. Escribí 'hola' para abrir una nueva.")
         return
-    
-    #renovamos ventana
+
     touch_session(chat_id)
 
+    # 2) Si el dron está en vuelo → NO permitir misión
+    if DRONE_STATE["in_air"]:
+        send_message(
+            chat_id,
+            (
+                "*No se puede iniciar la misión.*\n"
+                "El dron ya se encuentra en vuelo.\n"
+                f"Última misión detectada: {DRONE_STATE['last_mission']}"
+            )
+        )
+        logs.client_log_operation(
+            "Intento de lanzamiento con dron en vuelo",
+            chat_id=chat_id,
+            last_mission=DRONE_STATE["last_mission"]
+        )
+        return
+
+    # Datos de la misión
+    mission_cfg = misiones.MISIONS[mission_key]
+    nombre = mission_cfg["name"]
+
     send_message(chat_id, f"Iniciando misión: {nombre}")
+    send_message(chat_id, "Enviando comando a FlytBase...")
 
-    #actualizamos el estado
-    """ user_mision_handler.update_mission_state(mission_key)
-    estado = status_misiones.MISION_STATUS.get(mission_key) #estado de mision.
- """
-    #aca verificamos que una misión en particular no este volando, pero enrealidad tenemos que verificar que ninguna haya volando.
-    """ if estado["status"]["mission_running"]:
-        elapsed = time.time() - estado["status"]["mission_start_time"]
-        remaining = int(misiones.MISIONS[mission_key]["duracion"] - elapsed)
-
-        if remaining > 0:
-            minutes, seconds = divmod(remaining, 60)
-            send_message(
-                chat_id,
-                (
-                    "Operación rechazada.\n"
-                    "La misión 'Perimetro Planta' continúa en progreso.\n"
-                    f"Volvé a intentarlo en {minutes} min {seconds} s."
-                ),
-            )
-            logs.client_log_operation(
-                "Intento de envío mientras misión activa",
-                chat_id=chat_id,
-                remaining_seconds=remaining,
-            )
-            return """
-
-
-    send_message(chat_id, "Iniciando misión programada")
     try:
+        # 3) Enviar misión
         response = jsonsender.enviar()
-        mission_running = True
-        mission_start_time = time.time()
-        current_mission_name = "mision1"
-        waiting_takeoff = True
 
+        estado = status_misiones.MISION_STATUS[mission_key]["status"]
+
+        estado["mission_running"] = False
+        estado["waiting_takeoff"] = True
+        estado["mission_start_time"] = time.time()
+        estado["expected_duration"] = misiones.MISIONS[mission_key]["duracion"]
+        estado["mission_chat_id"] = chat_id
+        estado["mission_name"] = nombre
+        estado["completed"] = False
+        estado["aborted"] = False
 
         logs.client_log_operation(
             "Misión enviada correctamente",
             chat_id=chat_id,
-            mission=current_mission_name,
+            mission=nombre,
             response=response,
         )
 
         send_message(
             chat_id,
             (
-                "Misión 'Perímetro Planta' enviada correctamente.\n"
-                "Bloqueo operativo activo hasta su finalización (~12 min)."
+                f"Misión '{nombre}' enviada correctamente.\n"
+                "Esperando despegue…\n"
+                "Bloqueo operativo activo hasta su finalización."
             ),
         )
-
 
     except requests.exceptions.RequestException as e:
-        logs.client_log_error(
-            "Error de comunicación con FlytBase",
-            chat_id=chat_id,
-            mission="mision1",
-            error=str(e),
-        )
+        logs.client_log_error("Error de comunicación con FlytBase",
+                               chat_id=chat_id, mission=nombre, error=str(e))
         send_message(
             chat_id,
-            (
-                "No se pudo enviar la misión a FlytBase.\n"
-                "Contactaremos al soporte.\n\n"
-                "¿Querés que te contacten por WhatsApp para una atención personalizada?"
-            ),
+            "Error enviando la misión a FlytBase.\n"
+            "¿Querés que soporte te contacte por WhatsApp?"
         )
-        #modulo wp TODO
-        #prompt_support_opt_in(chat_id)
 
     except Exception as e:
-        logs.client_log_error(
-            "Error inesperado al procesar misión",
-            chat_id=chat_id,
-            mission="mision1",
-            error=str(e),
-        )
+        logs.client_log_error("Error inesperado", chat_id=chat_id,
+                              mission=nombre, error=str(e))
         send_message(
             chat_id,
-            (
-                "Se produjo un error inesperado al programar la misión.\n"
-                "Contactaremos al soporte.\n\n"
-                "¿Querés que te contacten por WhatsApp para una atención personalizada?"
-            ),
+            "Ocurrió un error inesperado.\n"
+            "¿Querés asistencia por WhatsApp?"
         )
-        #modulo wp TODO
-        #prompt_support_opt_in(chat_id)
+
 
 
 # ================== Otras Respuestas ==================
@@ -226,11 +232,31 @@ def handle_lista_misiones(chat_id: int):
 )
 
 #RESPONDEMOS A MENSAJE ESTADO
-#TODO
 def handle_estado(chat_id: int):
     if not is_session_active(chat_id):
-        remove_keyboard(chat_id, "Tu ventana estaba cerrada por inactividad. Escribí 'hola' para abrir una nueva.")
+        remove_keyboard(chat_id, "Tu ventana estaba cerrada. Escribí 'hola' para abrir una nueva sesión.")
         return
+
+    touch_session(chat_id)
+
+    # Verificamos el estado del dron
+    if DRONE_STATE["in_air"]:
+        elapsed = int(time.time() - DRONE_STATE["takeoff_time"])
+        minutos, segundos = divmod(elapsed, 60)
+
+        status_msg = (
+            "*Estado del dron: EN VUELO*\n\n"
+            f"🚁 Última misión: {DRONE_STATE['last_mission']}\n"
+            f"⏱ Tiempo en vuelo: {minutos} min {segundos} s"
+        )
+    else:
+        status_msg = (
+            "*Estado del dron: EN TIERRA*\n\n"
+            "No hay misiones ejecutándose en este momento."
+        )
+
+    send_message(chat_id, status_msg)
+    logs.client_log_operation("Consulta de estado", chat_id=chat_id, status=status_msg)
 
     touch_session(chat_id)
     status_message = format_mission_status()

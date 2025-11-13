@@ -1,7 +1,6 @@
 {
     "python.analysis.extraPaths": [
         "./adjuntos/mail/mail_",
-        "./adjuntos/mail/mail_",
-        "./adjuntos/bots/CLIENTE"
+        "./adjuntos/mail/mail_"
     ]
 }

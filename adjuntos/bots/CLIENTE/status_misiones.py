@@ -1,15 +1,26 @@
+from time import time
 from typing import Dict, Any
 import copy
 
 
 DEFAULT_STATUS = {
     "mission_running": False,
-    "mission_start_time": 0.0,
+    "mission_start_time": None,
     "mission_chat_id": None,
-    "waiting_takeoff": False
+    "mission_name": None,
+    "expected_duration": None,
+    "waiting_takeoff": False,
+    "completed": False,
+    "aborted": False
 }
 
-MISION_STATUS = {}
+MISSION_LOG = []
+
+DRONE_STATE = {
+    "in_air": False,
+    "takeoff_time": None,
+    "last_mission": None
+}
 
 
 def build_status(misions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
@@ -26,3 +37,10 @@ def build_status(misions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]
         for key in misions.keys()
     }
 
+def registrar_mision(nombre, estado, duracion_real):
+    MISSION_LOG.append({
+        "timestamp": time.time(),
+        "nombre": nombre,
+        "estado": estado,   # “completada” o “abortada”
+        "duracion": duracion_real
+    })
