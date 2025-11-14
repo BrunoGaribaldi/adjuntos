@@ -1,8 +1,8 @@
 import time
 from typing import Optional, Dict, Any
-import status_misiones
-import lista_misiones as missions
-import logs
+from . import status_misiones
+from . import lista_misiones as missions
+from . import logs
 
 def resolve_mission_key(text: str, misions: Dict[str, Dict[str, Any]]) -> Optional[str]:
     t = (text or "").strip().lower()

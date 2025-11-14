@@ -1,8 +1,8 @@
 import time
 import logging
-from mail.mail_data_handler import handler
-import status_misiones
-from status_misiones import MISSION_LOG, registrar_mision
+from .mail_data_handler import handler
+from adjuntos.bots.CLIENTE import status_misiones
+from adjuntos.bots.CLIENTE.status_misiones import MISSION_LOG, registrar_mision
 
 def sync_mission_status():
     logging.info("[SYNC] Monitor de estado iniciado...")

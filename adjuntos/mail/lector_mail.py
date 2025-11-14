@@ -7,7 +7,7 @@ import imaplib
 import email
 from email.header import decode_header, make_header
 from email.utils import parsedate_to_datetime
-from mail.mail_data_handler import handler
+from .mail_data_handler import handler
 
 
 from datetime import datetime

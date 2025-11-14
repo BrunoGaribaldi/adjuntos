@@ -7,17 +7,17 @@ from typing import Any, Dict, Optional, List, Tuple
 import re
 import threading
 import requests
-import config
-from mail.lector_mail import MonitorearCorreo  
-from mail.mail_state_sync import sync_mission_status  
-from mail.mail_data_handler import handler      
-import adjuntos.bots.CLIENTE.jsonsender as jsonsender  
-import logs 
-import status_misiones
-import lista_misiones as misiones
-import UI
-from status_misiones import DRONE_STATE
-import adjuntos.bots.CLIENTE.user_mision_handler as user_mision_handler
+from . import config
+from adjuntos.mail.lector_mail import MonitorearCorreo  
+from adjuntos.mail.mail_state_sync import sync_mission_status  
+from adjuntos.mail.mail_data_handler import handler      
+from . import jsonsender  
+from . import logs 
+from . import status_misiones
+from . import lista_misiones as misiones
+from . import UI
+from .status_misiones import DRONE_STATE
+from . import user_mision_handler
 
 # ================== Loop principal ==================
 def main():
@@ -25,8 +25,8 @@ def main():
     status_misiones.MISION_STATUS = status_misiones.build_status(misiones.MISIONS)
 
     # Cargamos la UI con las misiones cargadas.
-    UI.setMainMenuChat(misiones.MISIONS)
-    UI.setMainMenuKeyboard(misiones.MISIONS)
+    UI.set_main_menu_chat(misiones.MISIONS)
+    UI.set_main_menu_keyboard(misiones.MISIONS)
 
     # Ignoramos mensajes viejos.
     clear_pending_updates()

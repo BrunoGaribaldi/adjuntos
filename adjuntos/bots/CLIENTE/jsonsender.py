@@ -1,5 +1,5 @@
 import requests
-import adjuntos.bots.CLIENTE.lista_misiones as lista_misiones
+from . import lista_misiones
 
 
 
